@@ -6,7 +6,6 @@ import * as MUI from '@material-ui/core'
 
 import { withStyles } from '@material-ui/core/styles';
 import { CssBaseline } from '@material-ui/core';
-// import axios from 'axios';
 
 
 import HomeComponent from './components/HomeComponent'

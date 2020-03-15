@@ -5,7 +5,6 @@ import { applyMiddleware, createStore } from 'redux'
 import logger from 'redux-logger';
 import { Provider } from 'react-redux'
 
-
 import reducers  from './reducers';
 
 import './index.css';
