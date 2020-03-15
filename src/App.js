@@ -1,26 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { BrowserRouter, Route } from 'react-router-dom';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import * as MUI from '@material-ui/core'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { withStyles } from '@material-ui/core/styles';
+import { CssBaseline } from '@material-ui/core';
+// import axios from 'axios';
+
+
+import HomeComponent from './components/HomeComponent'
+
+const styles = theme => ({
+  appBar: {
+    position: 'relative',
+    marginLeft: 240
+  },
+  icon: {
+    // marginRight: theme.spacing.unit(2),
+  },
+  browserRouter: {
+    // marginLeft: 240
+  }
+});
+
+class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.classes = props.classes
+  }
+
+  render() {
+    return <React.Fragment>
+      <CssBaseline />
+      <BrowserRouter className={this.classes.browserRouter}>
+        <Route path="/" exact component={HomeComponent} />
+      </BrowserRouter>
+    </React.Fragment>
+  }
+
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    // sample: state.sample
+  }
+}
+
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({
+  }, dispatch);
+}
+
+export default
+  connect(mapStateToProps, matchDispatchToProps)
+  (withStyles(styles)(App));
