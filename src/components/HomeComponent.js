@@ -107,7 +107,7 @@ class HomeComponent extends Component {
 
         <MUI.Paper>
         <MUI.Container>
-        <h1>Medical Equipments(PPE) Donation Platform</h1>
+        <h1>Medical Equipments (PPE) Donation Platform</h1>
         <p>
         Data Privacy: The data we collect here will be only used to provide aid to our COVID-19PH frontliners.
         Should you wish to remove your personal data, please send us an e-mail at mh.neri(at)gmail.com
