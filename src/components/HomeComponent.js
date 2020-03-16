@@ -9,6 +9,9 @@ import NewComponent from './NewComponent'
 import { setDetails, getHelpLists } from '../actions/MainAction'
 
 const styles = theme => ({
+  table: {
+    minWidth: 200
+  }
 });
 
 class HomeComponent extends Component {
@@ -65,12 +68,28 @@ class HomeComponent extends Component {
         &nbsp;{this.props.details.title}
       </MUI.DialogTitle>
       <MUI.Container style={{ padding: '5px', minWidth: '200px'}}>
-        <p>{this.props.details.description}</p>
-        <br />
-        <h3>Contact details</h3>
-        <p>{this.props.details.contactPerson}</p>
-        <p>M#: {this.props.details.contactNumber}</p>
-        <p>FB: {this.props.details.contactFacebook}</p>
+        <MUI.TableContainer component={MUI.Paper}>
+            <MUI.Table className={this.classes.table} aria-label="simple table">
+              <MUI.TableBody>
+                <MUI.TableRow key="details">
+                  <MUI.TableCell><strong>DETAILS</strong></MUI.TableCell>
+                  <MUI.TableCell>{this.props.details.description}</MUI.TableCell>
+                </MUI.TableRow>
+                <MUI.TableRow key="contact_person">
+                  <MUI.TableCell><strong>CONTACT</strong></MUI.TableCell>
+                  <MUI.TableCell>{this.props.details.contactPerson}</MUI.TableCell>
+                </MUI.TableRow>
+                <MUI.TableRow key="contact_number">
+                  <MUI.TableCell><strong>CONTACT NUMBER</strong></MUI.TableCell>
+                  <MUI.TableCell>{this.props.details.contactNumber}</MUI.TableCell>
+                </MUI.TableRow>
+                <MUI.TableRow key="contact_facebook">
+                  <MUI.TableCell><strong>FACEBOOK PROFILE</strong></MUI.TableCell>
+                  <MUI.TableCell>{this.props.details.contactFacebook}</MUI.TableCell>
+                </MUI.TableRow>
+              </MUI.TableBody>
+            </MUI.Table>
+          </MUI.TableContainer>
       </MUI.Container>
     </MUI.Dialog>
   }
@@ -85,7 +104,21 @@ class HomeComponent extends Component {
     return <div className={this.classes.main}>
       <MUI.Container maxWidth="lg">
         {this.renderDialog()}
-        <h1>Help Center</h1>
+
+        <MUI.Paper>
+        <MUI.Container>
+        <h1>Medical Equipments(PPE) Donation Platform</h1>
+        <p>
+        Data Privacy: The data we collect here will be only used to provide aid to our COVID-19PH frontliners.
+        Should you wish to remove your personal data, please send us an e-mail at mh.neri(at)gmail.com
+
+        </p>
+        <br/><strong>***Please use this app responsibly***</strong>
+
+        </MUI.Container>
+
+        </MUI.Paper>
+
         <MUI.Grid  container spacing={3}>
           <MUI.Grid item xs={12}>
             <NewComponent />

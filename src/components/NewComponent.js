@@ -15,22 +15,6 @@ const styles = theme => ({
   },
 });
 
-const getSuccess = (pos) => {
-  console.log(pos)
-}
-
-const getFailed = (err) => {
-  console.log(err)
-  alert('Please allow app to access location for it to function properly')
-}
-
-const getOptions = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0
-}
-
-
 class NewComponent extends Component {
   constructor(props) {
     super(props)
@@ -50,10 +34,6 @@ class NewComponent extends Component {
 
   }
 
-  componentWillMount() {
-    navigator.geolocation.getCurrentPosition(getSuccess, getFailed, getOptions)
-
-  }
   handleInputChange(key) {
     return (event) => {
       this.setState({ [key]: event.target.value })
@@ -78,22 +58,22 @@ class NewComponent extends Component {
       <MUI.Paper style={{padding: '12px'}}>
         <MUI.Container>
           <MUI.FormGroup>
-            <MUI.RadioGroup aria-label="gender" name="gender1" value={this.state.type} onChange={this.handleInputChange('type')}>
+            <MUI.RadioGroup aria-label="help_type" name="help_type" value={this.state.type} onChange={this.handleInputChange('type')}>
               <MUI.FormLabel component="legend">Please select one:</MUI.FormLabel>
               <MUI.FormControlLabel value="need" control={<MUI.Radio color="primary" />} label="Need Help" />
               <MUI.FormControlLabel value="offer" control={<MUI.Radio color="primary" />} label="Offer Help" />
             </MUI.RadioGroup>
             <MUI.FormControl className={this.classes.formControl}>
-              <MUI.TextField label="Title" value={this.state.title} onChange={this.handleInputChange('title')} />
+              <MUI.TextField label="*Title" value={this.state.title} onChange={this.handleInputChange('title')} />
             </MUI.FormControl>
             <MUI.FormControl className={this.classes.formControl}>
-              <MUI.TextField label="Details" value={this.state.description} onChange={this.handleInputChange('description')} />
+              <MUI.TextField label="*Details (Include Location)" value={this.state.description} onChange={this.handleInputChange('description')} />
             </MUI.FormControl>
             <MUI.FormControl className={this.classes.formControl}>
-              <MUI.TextField label="Contact Person" value={this.state.contactPerson} onChange={this.handleInputChange('contactPerson')} />
+              <MUI.TextField label="*Contact Person" value={this.state.contactPerson} onChange={this.handleInputChange('contactPerson')} />
             </MUI.FormControl>
             <MUI.FormControl className={this.classes.formControl}>
-              <MUI.TextField label="Contact Number" value={this.state.contactNumber} onChange={this.handleInputChange('contactNumber')} />
+              <MUI.TextField label="*Contact Number" value={this.state.contactNumber} onChange={this.handleInputChange('contactNumber')} />
             </MUI.FormControl>
             <MUI.FormControl className={this.classes.formControl}>
               <MUI.TextField label="Contact (Facebook)" value={this.state.contactFacebook} onChange={this.handleInputChange('contactFacebook')} />

@@ -1,4 +1,4 @@
 export default {
-  // api: 'http://api-help.covid19ph.net',
-  api: 'http://localhost:8080',
+  api: 'https://help-api.covid19ph.net',
+  // api: 'http://localhost:8080',
 }

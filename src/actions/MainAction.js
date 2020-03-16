@@ -13,7 +13,12 @@ const getHelpLists = () => async (dispatch) => {
 }
 
 const saveHelpItem = (item) => async (dispatch) => {
-  const { data } = await axios.post(`${config.api}/help`, item)
+  try {
+    await axios.post(`${config.api}/help`, item)
+  } catch (error) {
+    alert(`Unable to perform request. \nFill-out all required details.\nServer: ${error.message}`)
+  }
+
 }
 
 export {
