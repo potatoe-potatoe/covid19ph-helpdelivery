@@ -119,6 +119,8 @@ class HomeComponent extends Component {
 
         </MUI.Paper>
 
+        <br />
+
         <MUI.Grid  container spacing={3}>
           <MUI.Grid item xs={12}>
             <NewComponent />
