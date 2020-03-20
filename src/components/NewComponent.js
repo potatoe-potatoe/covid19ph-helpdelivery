@@ -9,9 +9,14 @@ import { saveHelpItem, getHelpLists } from '../actions/MainAction';
 import phLocations from '../json/parsedLocations.json';
 
 const styles = theme => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+  formGroupMargin: {
+    margin: '10px 0px'
+  },
+  formCardPadding: {
+    padding: '12px'
+  },
+  formTypographyPadding: {
+    padding: '0px 0px 12px 0px'
   }
 });
 
@@ -125,8 +130,14 @@ class NewComponent extends Component {
         <MUI.Paper style={{padding: '30px 12px'}}>
           <MUI.Container>
             <MUI.FormGroup>
-              <MUI.RadioGroup aria-label="help_type" name="help_type" value={this.state.type} onChange={this.handleInputChange('type')}>
-                <MUI.FormLabel component="legend" style={{ padding: '0px 0px 12px 0px'}}>
+              <MUI.RadioGroup
+                className={this.classes.formGroupMargin}
+                aria-label="help_type"
+                name="help_type"
+                value={this.state.type}
+                onChange={this.handleInputChange('type')}
+              >
+                <MUI.FormLabel className={this.classes.formTypographyPadding} component="legend">
                     Are you <b>in need of donations</b> or <b>offering donations</b>? Please select one:
                 </MUI.FormLabel>
                 <MUI.FormControlLabel
@@ -139,10 +150,8 @@ class NewComponent extends Component {
                   label="I am offering donations." />
               </MUI.RadioGroup>
 
-              <br />
-
-              <MUI.Card variant="outlined" style={{padding: '12px'}}>
-                <MUI.Typography style={{ padding: '0px 0px 12px 0px' }}>
+              <MUI.Card className={[this.classes.formGroupMargin, this.classes.formCardPadding]} variant="outlined">
+                <MUI.Typography className={this.classes.formTypographyPadding}>
                   Donation Item Details
                 </MUI.Typography>
 
@@ -182,10 +191,8 @@ class NewComponent extends Component {
                 </MUI.Grid>
               </MUI.Card>
 
-              <br />
-
-              <MUI.Card variant="outlined" style={{padding: '12px'}}>
-                <MUI.Typography style={{ padding: '0px 0px 12px 0px' }}>
+              <MUI.Card className={[this.classes.formGroupMargin, this.classes.formCardPadding]} variant="outlined">
+                <MUI.Typography className={this.classes.formTypographyPadding}>
                   Location
                 </MUI.Typography>
 
@@ -253,10 +260,8 @@ class NewComponent extends Component {
                 </MUI.Grid>
               </MUI.Card>
 
-              <br />
-
-              <MUI.Card variant="outlined" style={{padding: '12px'}}>
-                <MUI.Typography style={{ padding: '0px 0px 12px 0px' }}>
+              <MUI.Card className={[this.classes.formGroupMargin, this.classes.formCardPadding]} variant="outlined">
+                <MUI.Typography className={this.classes.formTypographyPadding}>
                   Contact Details
                 </MUI.Typography>
 
@@ -297,9 +302,13 @@ class NewComponent extends Component {
               </MUI.Card>
             </MUI.FormGroup>
 
-            <br />
-
-            <MUI.Button onClick={this.handleSubmit} size="large" color="primary" variant="contained">
+            <MUI.Button
+              className={this.classes.formGroupMargin} 
+              onClick={this.handleSubmit} 
+              size="large"
+              color="primary"
+              variant="contained"
+            >
               Submit
             </MUI.Button>
           </MUI.Container>
