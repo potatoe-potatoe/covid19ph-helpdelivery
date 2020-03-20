@@ -98,39 +98,42 @@ class HomeComponent extends Component {
     this.setState({ list: props.main.list })
   }
 
-
-
   render() {
-    return <div className={this.classes.main}>
-      <MUI.Container maxWidth="lg">
-        {this.renderDialog()}
+    return (
+      <div style={{ padding: '10px 0px' }}>
+        <MUI.Container maxWidth="lg">
+          {this.renderDialog()}
 
-        <MUI.Paper>
-        <MUI.Container>
-        <h1>Medical Equipments (PPE) Donation Platform</h1>
-        <p>
-        Data Privacy: The data we collect here will be only used to provide aid to our COVID-19PH frontliners.
-        Should you wish to remove your personal data, please send us an e-mail at mh.neri(at)gmail.com
+          <MUI.Paper style={{ padding: '5px 12px 30px' }}>
+            <MUI.Container>
+              <h1>Medical Equipments (PPE) Donation Platform</h1>
+              <p>
+                <strong> Data Privacy notice: </strong><br />
+                &emsp;The data we collect here will be only used to provide aid to our COVID-19PH frontliners. <br />
+                &emsp;Should you wish to remove your personal data, please send us an e-mail at&nbsp;
+                  <a href="mailto:mh.neri@gmail.com">mh.neri&#64;gmail.com</a>.
+              </p>
 
-        </p>
-        <br/><strong>***Please use this app responsibly***</strong>
+              <strong>Please use this app responsibly.</strong>
 
-        </MUI.Container>
+            </MUI.Container>
+          </MUI.Paper>
 
-        </MUI.Paper>
+          <br />
 
-        <br />
-
-        <MUI.Grid  container spacing={3}>
-          <MUI.Grid item xs={12}>
-            <NewComponent />
-            {this.renderList()}
+          <MUI.Grid  container spacing={3}>
+            <MUI.Grid item xs={12}>
+              <NewComponent />
+              {this.renderList()}
+            </MUI.Grid>
           </MUI.Grid>
-      </MUI.Grid>
-      </MUI.Container>
-    </div>
+        </MUI.Container>
+      </div>
+    );
+    
   }
 }
+
 function mapStateToProps(state) {
   return {
     main: state.main,
