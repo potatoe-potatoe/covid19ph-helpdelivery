@@ -1,101 +1,133 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import * as MUI from '@material-ui/core'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import * as MUI from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-
-import NewComponent from './NewComponent'
-import { setDetails, getHelpLists } from '../actions/MainAction'
+import NewComponent from './NewComponent';
+import { setDetails, getHelpLists } from '../actions/MainAction';
 
 const styles = theme => ({
   table: {
     minWidth: 200
+  },
+  customChip: {
+    minWidth: 100
   }
 });
 
 class HomeComponent extends Component {
   constructor(props) {
-    super(props)
-    this.classes = props.classes
+    super(props);
+    this.classes = props.classes;
 
     this.state = {
       list: [],
       dialogOpen: false,
-    }
+    };
 
-    this.clickListItem = this.clickListItem.bind(this)
-    this.onDialogClose = this.onDialogClose.bind(this)
+    this.clickListItem = this.clickListItem.bind(this);
+    this.toggleDialog = this.toggleDialog.bind(this);
   }
 
   async componentDidMount() {
-    await this.props.getHelpLists()
-    this.setState({ list: this.props.main.list })
+    await this.props.getHelpLists();
+    this.setState({ list: this.props.main.list });
   }
 
   clickListItem(e) {
-    console.log('hello', e)
-    this.props.setDetails(e)
-    this.setState({ dialogOpen: true })
+    this.props.setDetails(e);
+    this.toggleDialog();
   }
 
-  onDialogClose() {
-    this.setState({ dialogOpen: false })
+  toggleDialog() {
+    this.setState({ dialogOpen: !this.state.dialogOpen });
   }
 
+  // @method    Renders 'Recent Items' list at the bottom of the page.
   renderList() {
-    return <div>
-      <MUI.List
-      aria-labelledby="nested-list-subheader"
-      subheader={
-        <MUI.ListSubheader component="div" id="nested-list-subheader">Recent Items</MUI.ListSubheader>
-      }
-      className={this.classes.root}>
-      {this.state.list.map(row => (
-        <MUI.ListItem key={row.id} onClick={() => {this.clickListItem(row)}} button>
-          <MUI.ListItemText primary={row.title} secondary={row.description || null} />
-          <MUI.Chip label={row.type} color={row.type === 'offer' ? 'primary' : 'secondary'} />
-       </MUI.ListItem>))}
-      </MUI.List>
-    </div>
+    return (
+      <React.Fragment>
+        <MUI.List
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <MUI.ListSubheader component="div" id="nested-list-subheader">Recent Items</MUI.ListSubheader>
+          }
+          className={this.classes.root}>
+          {this.state.list.map(row => (
+            <MUI.ListItem key={row.id} onClick={() => {this.clickListItem(row)}} button>
+              <MUI.ListItemText
+                primary={(row.item).concat(' (x', row.amount, ')')}
+                secondary={(row.locCity).concat(', ', (row.locBarangay))} />
+              <MUI.Chip l
+                className={this.classes.customChip}
+                label={(row.type).toUpperCase()}
+                color={row.type === 'offer' ? 'primary' : 'secondary'} />
+            </MUI.ListItem>))}
+        </MUI.List>
+      </React.Fragment>
+    );
   }
 
-
+  // @method    Renders modal containing specific donation item info from 'Recent Items' list.
   renderDialog() {
-    return <MUI.Dialog open={this.state.dialogOpen} onClose={this.onDialogClose}>
-      <MUI.DialogTitle id="simple-dialog-title">
-        <MUI.Chip label={this.props.details.type} color={this.props.details.type === 'offer' ? 'primary' : 'secondary'}/>
-        &nbsp;{this.props.details.title}
-      </MUI.DialogTitle>
-      <MUI.Container style={{ padding: '5px', minWidth: '200px'}}>
-        <MUI.TableContainer component={MUI.Paper}>
-            <MUI.Table className={this.classes.table} aria-label="simple table">
-              <MUI.TableBody>
-                <MUI.TableRow key="details">
-                  <MUI.TableCell><strong>DETAILS</strong></MUI.TableCell>
-                  <MUI.TableCell>{this.props.details.description}</MUI.TableCell>
-                </MUI.TableRow>
-                <MUI.TableRow key="contact_person">
-                  <MUI.TableCell><strong>CONTACT</strong></MUI.TableCell>
-                  <MUI.TableCell>{this.props.details.contactPerson}</MUI.TableCell>
-                </MUI.TableRow>
-                <MUI.TableRow key="contact_number">
-                  <MUI.TableCell><strong>CONTACT NUMBER</strong></MUI.TableCell>
-                  <MUI.TableCell>{this.props.details.contactNumber}</MUI.TableCell>
-                </MUI.TableRow>
-                <MUI.TableRow key="contact_facebook">
-                  <MUI.TableCell><strong>FACEBOOK PROFILE</strong></MUI.TableCell>
-                  <MUI.TableCell>{this.props.details.contactFacebook}</MUI.TableCell>
-                </MUI.TableRow>
-              </MUI.TableBody>
-            </MUI.Table>
-          </MUI.TableContainer>
-      </MUI.Container>
-    </MUI.Dialog>
+    // check if object from database exists
+    // id is a REQUIRED field, so existence of object can be checked via id
+    if (this.props.details.id == null) {
+      return;
+    }
+
+    return (
+      <MUI.Dialog open={this.state.dialogOpen} onClose={this.toggleDialog}>
+        <MUI.DialogTitle id="simple-dialog-title" style={{ paddingBottom: '0px'}}>
+          <MUI.Chip
+            className={this.classes.customChip}
+            label={(this.props.details.type).toUpperCase()}
+            color={this.props.details.type === 'offer' ? 'primary' : 'secondary'} />
+          &nbsp; {this.props.details.item} (x{this.props.details.amount})
+        </MUI.DialogTitle>
+
+        <MUI.Container style={{ padding: '5px', minWidth: '200px'}}>
+          <MUI.TableContainer>
+              <MUI.Table className={this.classes.table} aria-label="simple-table">
+                <MUI.TableBody>
+                  <MUI.TableRow key="details">
+                    <MUI.TableCell><strong>LOCATION</strong></MUI.TableCell>
+                    <MUI.TableCell>
+                      {this.props.details.locCity} <br />
+                      {this.props.details.locBarangay} <br />
+                      {this.props.details.locOther}
+                    </MUI.TableCell>
+                  </MUI.TableRow>
+
+                  <MUI.TableRow key="contact_person">
+                    <MUI.TableCell><strong>CONTACT</strong></MUI.TableCell>
+                    <MUI.TableCell>{this.props.details.contactPerson}</MUI.TableCell>
+                  </MUI.TableRow>
+
+                  <MUI.TableRow key="contact_number">
+                    <MUI.TableCell><strong>CONTACT NUMBER</strong></MUI.TableCell>
+                    <MUI.TableCell>{this.props.details.contactNumber}</MUI.TableCell>
+                  </MUI.TableRow>
+                  
+                  <MUI.TableRow key="contact_facebook">
+                    <MUI.TableCell style={{ border: '0px solid' }}><strong>FACEBOOK PROFILE</strong></MUI.TableCell>
+                    <MUI.TableCell style={{ border: '0px solid' }}>{this.props.details.contactFacebook}</MUI.TableCell>
+                  </MUI.TableRow>
+                </MUI.TableBody>
+              </MUI.Table>
+            </MUI.TableContainer>
+        </MUI.Container>
+
+        <MUI.Button style={{ backgroundColor: 'black', color: 'white', borderRadius: '0' }} size='large' onClick={this.toggleDialog} variant="contained">
+          <strong>Close</strong>
+        </MUI.Button>
+      </MUI.Dialog>
+    );
   }
 
   componentWillReceiveProps(props) {
-    this.setState({ list: props.main.list })
+    this.setState({ list: props.main.list });
   }
 
   render() {
@@ -138,14 +170,16 @@ function mapStateToProps(state) {
   return {
     main: state.main,
     details: state.main.details,
-  }
+  };
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({
-    setDetails,
-    getHelpLists,
-  }, dispatch);
+  return (
+    bindActionCreators({
+      setDetails,
+      getHelpLists,
+    }, dispatch)
+  );
 }
 
 export default
