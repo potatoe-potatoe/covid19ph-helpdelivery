@@ -17,6 +17,9 @@ const styles = theme => ({
   },
   formTypographyPadding: {
     padding: '0px 0px 12px 0px'
+  },
+  formInputLabel: {
+    shrink: true
   }
 });
 
@@ -70,22 +73,24 @@ class NewComponent extends Component {
       }
     }
 
-    await this.props.saveHelpItem(submitItem);
+    let result = await this.props.saveHelpItem(submitItem);
 
-    this.setState({
-      type: '',
-      item: '',
-      amount: 1,
-      locCity: '',
-      locBarangay: '',
-      locOther: '',
-      barangayList: [],
-      contactPerson: '',
-      contactNumber: '',
-      contactFacebook: '',
-    });
-
-    this.props.getHelpLists()
+    if (result === 'OK') {
+      this.setState({
+        type: '',
+        item: '',
+        amount: 1,
+        locCity: '',
+        locBarangay: '',
+        locOther: '',
+        barangayList: [],
+        contactPerson: '',
+        contactNumber: '',
+        contactFacebook: '',
+      });
+  
+      this.props.getHelpLists()
+    }
   }
 
   getBarangayList(city) {
@@ -172,7 +177,7 @@ class NewComponent extends Component {
 
                         {ppeList.map((item) => {
                           return(
-                            <MUI.MenuItem value={item.value}>{item.name}</MUI.MenuItem>
+                            <MUI.MenuItem value={item.name}>{item.name}</MUI.MenuItem>
                           );
                         })}
                       </MUI.Select>
@@ -211,7 +216,7 @@ class NewComponent extends Component {
                         renderInput={params => (
                           <MUI.TextField
                             {...params}
-                            InputLabelProps={{ shrink: true }}
+                            InputLabelProps={this.classes.formInputLabel}
                             InputProps={{ ...params.InputProps }}
                             label="City / Municipality"
                             placeholder="--- Select City ---" />
@@ -235,7 +240,7 @@ class NewComponent extends Component {
                         renderInput={params => (
                           <MUI.TextField
                             {...params}
-                            InputLabelProps={{ shrink: true }}
+                            InputLabelProps={this.classes.formInputLabel}
                             InputProps={{ ...params.InputProps }}
                             label="Barangay"
                             placeholder="--- Select Barangay ---" />
@@ -250,7 +255,7 @@ class NewComponent extends Component {
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
                         type="text"
-                        InputLabelProps={{ shrink: true }}
+                        InputLabelProps={this.classes.formInputLabel}
                         label="Other Location Details"
                         placeholder="Example: street number, block, area"
                         value={this.state.locOther}
@@ -269,7 +274,7 @@ class NewComponent extends Component {
                   <MUI.Grid item xs={12}>
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
-                        InputLabelProps={{ shrink: true }}
+                        InputLabelProps={this.classes.formInputLabel}
                         label="Contact Person"
                         placeholder="Example: Juan dela Cruz"
                         value={this.state.contactPerson}
@@ -280,7 +285,7 @@ class NewComponent extends Component {
                   <MUI.Grid item xs={6}>
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
-                        InputLabelProps={{ shrink: true }}
+                        InputLabelProps={this.classes.formInputLabel}
                         label="Contact Number"
                         placeholder="Insert mobile or landline number"
                         value={this.state.contactNumber}
@@ -291,7 +296,7 @@ class NewComponent extends Component {
                   <MUI.Grid item xs={6}>
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
-                          InputLabelProps={{ shrink: true }}
+                          InputLabelProps={this.classes.formInputLabel}
                           label="Facebook"
                           placeholder="Insert Facebook name or link"
                           value={this.state.contactFacebook}
