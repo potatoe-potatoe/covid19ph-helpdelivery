@@ -80,11 +80,17 @@ class HomeComponent extends Component {
     return (
       <MUI.Dialog open={this.state.dialogOpen} onClose={this.toggleDialog}>
         <MUI.DialogTitle id="simple-dialog-title" style={{ paddingBottom: '0px'}}>
-          <MUI.Chip
-            className={this.classes.customChip}
-            label={(this.props.details.type).toUpperCase()}
-            color={this.props.details.type === 'offer' ? 'primary' : 'secondary'} />
-          &nbsp; {this.props.details.item} (x{this.props.details.amount})
+          <MUI.Grid container>
+            <MUI.Grid item>
+              <MUI.Chip
+                className={this.classes.customChip}
+                label={(this.props.details.type).toUpperCase()}
+                color={this.props.details.type === 'offer' ? 'primary' : 'secondary'} />
+            </MUI.Grid>
+            <MUI.Grid>
+              <span>&nbsp; {this.props.details.item} (x{this.props.details.amount})</span>
+            </MUI.Grid>
+          </MUI.Grid>
         </MUI.DialogTitle>
 
         <MUI.Container style={{ padding: '5px', minWidth: '200px'}}>

@@ -18,9 +18,6 @@ const styles = theme => ({
   },
   formTypographyPadding: {
     padding: '0px 0px 12px 0px'
-  },
-  formInputLabel: {
-    shrink: true
   }
 });
 
@@ -108,29 +105,6 @@ class NewComponent extends Component {
   }
 
   render() {
-    // const ppeList = [
-    //   {
-    //     id: 'item1',
-    //     name: 'N95 mask',
-    //     value: 'n95-mask'
-    //   },
-    //   {
-    //     id: 'item2',
-    //     name: 'Surgical mask',
-    //     value: 'surg-mask'
-    //   },
-    //   {
-    //     id: 'item3',
-    //     name: 'Face shield',
-    //     value: 'face-shield'
-    //   },
-    //   {
-    //     id: 'item4',
-    //     name: 'Surgical gown',
-    //     value: 'surg-gown'
-    //   }
-    // ];
-
     return (
       <React.Fragment>
         <MUI.Paper style={{padding: '30px 12px'}}>
@@ -162,8 +136,7 @@ class NewComponent extends Component {
                 </MUI.Typography>
 
                 <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={10}>
-                    {/* todo: retrieve list from database, then map to <MUI.Select> */}
+                  <MUI.Grid item xs={9} md={10}>
                     <MUI.FormControl fullWidth>
                       <MUI.InputLabel shrink> Item </MUI.InputLabel>
 
@@ -185,7 +158,7 @@ class NewComponent extends Component {
                     </MUI.FormControl>
                   </MUI.Grid>
 
-                  <MUI.Grid item xs={2} alignItems="center">
+                  <MUI.Grid item xs={3} md={2}>
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
                         label="Amount"
@@ -203,7 +176,7 @@ class NewComponent extends Component {
                 </MUI.Typography>
 
                 <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={4}>
+                  <MUI.Grid item xs={12} md={4}>
                     <MUI.FormControl fullWidth>
                       <Autocomplete
                         options={phLocations.cityList}
@@ -217,7 +190,7 @@ class NewComponent extends Component {
                         renderInput={params => (
                           <MUI.TextField
                             {...params}
-                            InputLabelProps={this.classes.formInputLabel}
+                            InputLabelProps={{ shrink: true }}
                             InputProps={{ ...params.InputProps }}
                             label="City / Municipality"
                             placeholder="--- Select City ---" />
@@ -228,7 +201,7 @@ class NewComponent extends Component {
                     </MUI.FormControl>
                   </MUI.Grid>
 
-                  <MUI.Grid item xs={4} alignItems="center">
+                  <MUI.Grid item xs={12} md={4} alignItems="center">
                     <MUI.FormControl fullWidth>
                       <Autocomplete
                         options={this.state.barangayList}
@@ -241,7 +214,7 @@ class NewComponent extends Component {
                         renderInput={params => (
                           <MUI.TextField
                             {...params}
-                            InputLabelProps={this.classes.formInputLabel}
+                            InputLabelProps={{ shrink: true }}
                             InputProps={{ ...params.InputProps }}
                             label="Barangay"
                             placeholder="--- Select Barangay ---" />
@@ -252,11 +225,11 @@ class NewComponent extends Component {
                     </MUI.FormControl>
                   </MUI.Grid>
 
-                  <MUI.Grid item xs={4} alignItems="center">
+                  <MUI.Grid item xs={12} md={4} alignItems="center">
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
                         type="text"
-                        InputLabelProps={this.classes.formInputLabel}
+                        InputLabelProps={{ shrink: true }}
                         label="Other Location Details"
                         placeholder="Example: street number, block, area"
                         value={this.state.locOther}
@@ -275,7 +248,7 @@ class NewComponent extends Component {
                   <MUI.Grid item xs={12}>
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
-                        InputLabelProps={this.classes.formInputLabel}
+                        InputLabelProps={{ shrink: true }}
                         label="Contact Person"
                         placeholder="Example: Juan dela Cruz"
                         value={this.state.contactPerson}
@@ -283,23 +256,23 @@ class NewComponent extends Component {
                     </MUI.FormControl>
                   </MUI.Grid>
 
-                  <MUI.Grid item xs={6}>
+                  <MUI.Grid item xs={12} sm={6}>
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
-                        InputLabelProps={this.classes.formInputLabel}
-                        label="Contact Number"
+                        InputLabelProps={{ shrink: true }}
+                        label="Contact #"
                         placeholder="Insert mobile or landline number"
                         value={this.state.contactNumber}
                         onChange={this.handleInputChange('contactNumber')} />
                     </MUI.FormControl>
                   </MUI.Grid>
 
-                  <MUI.Grid item xs={6}>
+                  <MUI.Grid item xs={12} sm={6}>
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
-                          InputLabelProps={this.classes.formInputLabel}
+                          InputLabelProps={{ shrink: true }}
                           label="Facebook"
-                          placeholder="Insert Facebook name or link"
+                          placeholder="Insert name or link"
                           value={this.state.contactFacebook}
                           onChange={this.handleInputChange('contactFacebook')} />
                     </MUI.FormControl>
