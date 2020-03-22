@@ -1,0 +1,20 @@
+{
+  "ppeList": [
+    {
+      "id": "item1",
+      "name": "N95 mask"
+    },
+    {
+      "id": "item2",
+      "name": "Surgical mask"
+    },
+    {
+      "id": "item3",
+      "name": "Face shield"
+    },
+    {
+      "id": "item4",
+      "name": "Surgical gown"
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { withStyles } from '@material-ui/core/styles';
 import { saveHelpItem, getHelpLists } from '../actions/MainAction';
 import phLocations from '../json/parsedLocations.json';
+import ppeList from '../json/ppeList.json';
 
 const styles = theme => ({
   formGroupMargin: {
@@ -107,28 +108,28 @@ class NewComponent extends Component {
   }
 
   render() {
-    const ppeList = [
-      {
-        id: 'item1',
-        name: 'N95 mask',
-        value: 'n95-mask'
-      },
-      {
-        id: 'item2',
-        name: 'Surgical mask',
-        value: 'surg-mask'
-      },
-      {
-        id: 'item3',
-        name: 'Face shield',
-        value: 'face-shield'
-      },
-      {
-        id: 'item4',
-        name: 'Surgical gown',
-        value: 'surg-gown'
-      }
-    ];
+    // const ppeList = [
+    //   {
+    //     id: 'item1',
+    //     name: 'N95 mask',
+    //     value: 'n95-mask'
+    //   },
+    //   {
+    //     id: 'item2',
+    //     name: 'Surgical mask',
+    //     value: 'surg-mask'
+    //   },
+    //   {
+    //     id: 'item3',
+    //     name: 'Face shield',
+    //     value: 'face-shield'
+    //   },
+    //   {
+    //     id: 'item4',
+    //     name: 'Surgical gown',
+    //     value: 'surg-gown'
+    //   }
+    // ];
 
     return (
       <React.Fragment>
@@ -175,7 +176,7 @@ class NewComponent extends Component {
                           <span style={{ color: '#babfbc' }}>{'--- Select Item ---'}</span>
                         </MUI.MenuItem>
 
-                        {ppeList.map((item) => {
+                        {ppeList.ppeList.map((item) => {
                           return(
                             <MUI.MenuItem value={item.name}>{item.name}</MUI.MenuItem>
                           );
