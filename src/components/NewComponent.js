@@ -8,6 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { saveHelpItem, getHelpLists } from '../actions/MainAction';
 import phLocations from '../json/parsedLocations.json';
 import ppeList from '../json/ppeList.json';
+import Form from './FormComponent';
 
 const styles = theme => ({
   formGroupMargin: {
@@ -106,193 +107,21 @@ class NewComponent extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <MUI.Paper style={{padding: '30px 12px'}}>
-          <MUI.Container>
-            <MUI.FormGroup>
-              <MUI.RadioGroup
-                className={this.classes.formGroupMargin}
-                aria-label="help_type"
-                name="help_type"
-                value={this.state.type}
-                onChange={this.handleInputChange('type')}
-              >
-                <MUI.FormLabel className={this.classes.formTypographyPadding} component="legend">
-                    Are you <b>in need of donations</b> or <b>offering donations</b>? Please select one:
-                </MUI.FormLabel>
-                <MUI.FormControlLabel
-                  value="need"
-                  control={<MUI.Radio color="primary" />}
-                  label="I am in need of donations." />
-                <MUI.FormControlLabel 
-                  value="offer"
-                  control={<MUI.Radio color="primary" />}
-                  label="I am offering donations." />
-              </MUI.RadioGroup>
-
-              <MUI.Card className={[this.classes.formGroupMargin, this.classes.formCardPadding]} variant="outlined">
-                <MUI.Typography className={this.classes.formTypographyPadding}>
-                  Donation Item Details
-                </MUI.Typography>
-
-                <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={9} md={10}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.InputLabel shrink> Item </MUI.InputLabel>
-
-                      <MUI.Select
-                        label="item"
-                        value={this.state.item === '' ? 'default' : this.state.item}
-                        onChange={this.handleInputChange('item')}
-                      >
-                        <MUI.MenuItem disabled value='default'>
-                          <span style={{ color: '#babfbc' }}>{'--- Select Item ---'}</span>
-                        </MUI.MenuItem>
-
-                        {ppeList.ppeList.map((item) => {
-                          return(
-                            <MUI.MenuItem value={item.name}>{item.name}</MUI.MenuItem>
-                          );
-                        })}
-                      </MUI.Select>
-                    </MUI.FormControl>
-                  </MUI.Grid>
-
-                  <MUI.Grid item xs={3} md={2}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
-                        label="Amount"
-                        type="number"
-                        value={this.state.amount}
-                        onChange={this.handleInputChange('amount')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-                </MUI.Grid>
-              </MUI.Card>
-
-              <MUI.Card className={[this.classes.formGroupMargin, this.classes.formCardPadding]} variant="outlined">
-                <MUI.Typography className={this.classes.formTypographyPadding}>
-                  Location
-                </MUI.Typography>
-
-                <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={12} md={4}>
-                    <MUI.FormControl fullWidth>
-                      <Autocomplete
-                        options={phLocations.cityList}
-                        autoHighlight
-                        renderOption={option => (
-                          <React.Fragment>
-                            {option}
-                          </React.Fragment>
-                        )}
-                        getOptionLabel={option => option}
-                        renderInput={params => (
-                          <MUI.TextField
-                            {...params}
-                            InputLabelProps={{ shrink: true }}
-                            InputProps={{ ...params.InputProps }}
-                            label="City / Municipality"
-                            placeholder="--- Select City ---" />
-                        )}
-                        value={this.state.locCity} 
-                        onChange={this.handleInputChange('locCity')}
-                      />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-
-                  <MUI.Grid item xs={12} md={4} alignItems="center">
-                    <MUI.FormControl fullWidth>
-                      <Autocomplete
-                        options={this.state.barangayList}
-                        autoHighlight
-                        renderOption={option => (
-                          <React.Fragment>
-                            {option}
-                          </React.Fragment>
-                        )}
-                        renderInput={params => (
-                          <MUI.TextField
-                            {...params}
-                            InputLabelProps={{ shrink: true }}
-                            InputProps={{ ...params.InputProps }}
-                            label="Barangay"
-                            placeholder="--- Select Barangay ---" />
-                        )}
-                        value={this.state.locBarangay} 
-                        onChange={this.handleInputChange('locBarangay')}
-                      />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-
-                  <MUI.Grid item xs={12} md={4} alignItems="center">
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
-                        type="text"
-                        InputLabelProps={{ shrink: true }}
-                        label="Other Location Details"
-                        placeholder="Example: street number, block, area"
-                        value={this.state.locOther}
-                        onChange={this.handleInputChange('locOther')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-                </MUI.Grid>
-              </MUI.Card>
-
-              <MUI.Card className={[this.classes.formGroupMargin, this.classes.formCardPadding]} variant="outlined">
-                <MUI.Typography className={this.classes.formTypographyPadding}>
-                  Contact Details
-                </MUI.Typography>
-
-                <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={12}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
-                        InputLabelProps={{ shrink: true }}
-                        label="Contact Person"
-                        placeholder="Example: Juan dela Cruz"
-                        value={this.state.contactPerson}
-                        onChange={this.handleInputChange('contactPerson')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-
-                  <MUI.Grid item xs={12} sm={6}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
-                        InputLabelProps={{ shrink: true }}
-                        label="Contact #"
-                        placeholder="Insert mobile or landline number"
-                        value={this.state.contactNumber}
-                        onChange={this.handleInputChange('contactNumber')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-
-                  <MUI.Grid item xs={12} sm={6}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
-                          InputLabelProps={{ shrink: true }}
-                          label="Facebook"
-                          placeholder="Insert name or link"
-                          value={this.state.contactFacebook}
-                          onChange={this.handleInputChange('contactFacebook')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-                </MUI.Grid>
-              </MUI.Card>
-            </MUI.FormGroup>
-
-            <MUI.Button
-              className={this.classes.formGroupMargin} 
-              onClick={this.handleSubmit} 
-              size="large"
-              color="primary"
-              variant="contained"
-            >
-              Submit
-            </MUI.Button>
-          </MUI.Container>
-        </MUI.Paper>
-      </React.Fragment>
+      <Form
+        styles={this.classes}
+        handleSubmit={this.handleSubmit}
+        handleInputChange={this.handleInputChange}
+        type={this.state.type}
+        item={this.state.item}
+        amount={this.state.amount}
+        locCity={this.state.locCity}
+        locBarangay={this.state.locBarangay}
+        locOther={this.state.locOther}
+        barangayList={this.state.barangayList}
+        contactPerson={this.state.contactPerson}
+        contactNumber={this.state.contactNumber}
+        contactFacebook={this.state.contactFacebook}
+      />
     );
   }
 }
