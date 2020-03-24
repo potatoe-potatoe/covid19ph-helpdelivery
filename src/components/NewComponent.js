@@ -8,7 +8,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { saveHelpItem, getHelpLists } from '../actions/MainAction';
 import phLocations from '../json/parsedLocations.json';
 import ppeList from '../json/ppeList.json';
-import Form from './FormComponent';
+import FormWithValidation from './FormComponent';
+import { Formik } from 'formik';
+
 
 const styles = theme => ({
   formGroupMargin: {
@@ -107,7 +109,7 @@ class NewComponent extends Component {
 
   render() {
     return (
-      <Form
+      <FormWithValidation
         styles={this.classes}
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
