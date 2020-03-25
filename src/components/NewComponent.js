@@ -21,52 +21,127 @@ const styles = theme => ({
   }
 });
 
+const requiredMsg = "This field is required.";
+
+const validationSchema = Yup.object({
+  type: Yup.string()
+    .required("Please select one."),
+  item: Yup.string()
+    .required(requiredMsg)
+    .notOneOf(['default'], 'Please select a PPE item.'),
+  amount: Yup.number()
+    .required(requiredMsg)
+    .integer('Amount must be an integer.')
+    .positive('Amount must be greater than 1.'),
+  locCity: Yup.string()
+    .required(requiredMsg),
+  locBarangay: Yup.string()
+    .required(requiredMsg),
+  contactPerson: Yup.string()
+    .required(requiredMsg),
+  contactNumber: Yup.string()
+    .required(requiredMsg)
+    .matches(/^[\d ()+-]+$/, 'This field can only contain: numbers, -, +, (, ).')
+});
+
 class NewComponent extends Component {
   constructor(props) {
-    super(props)
-    this.classes = props.classes
+    super(props);
+    this.classes = props.classes;
 
     this.state = {
-      type: '',
-      item: '',
-      amount: 1,
-      locCity: '',
-      locBarangay: '',
-      locOther: '',
-      barangayList: [],
-      contactPerson: '',
-      contactNumber: '',
-      contactFacebook: '',
+      // type: '',
+      // item: '',
+      // amount: 1,
+      // locCity: '',
+      // locBarangay: '',
+      // locOther: '',
+      // barangayList: [],
+      // contactPerson: '',
+      // contactNumber: '',
+      // contactFacebook: '',
       isSubmitted: false
-    }
-    this.handleInputChange = this.handleInputChange.bind(this);
+    };
+
+    // this.handleInputChange = this.handleInputChange.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
+  
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmitChange = this.handleSubmitChange.bind(this);
   }
 
-  handleInputChange(key) {
-    return (event, value) => {
-      if (key === 'locCity') {
-        this.setState({
-          [key]: value,
-          locBarangay: '',
-          barangayList: this.getBarangayList(value),
-        });
-      }
-      else if (key === 'locBarangay') {
-        this.setState({ [key]: value });
-      }
-      else this.setState({ [key]: event.target.value })
-    }
-  }
+  // handleInputChange(key) {
+  //   return (event, value) => {
+  //     if (key === 'locCity') {
+  //       this.setState({
+  //         [key]: value,
+  //         locBarangay: '',
+  //         barangayList: this.getBarangayList(value),
+  //       });
+  //     }
+  //     else if (key === 'locBarangay') {
+  //       this.setState({ [key]: value });
+  //     }
+  //     else this.setState({ [key]: event.target.value })
+  //   }
+  // }
 
-  async handleSubmit(e) {
-    e.preventDefault();
+  // async handleSubmit(e) {
+  //   e.preventDefault();
 
+  //   let submitItem = {};
+  //   for (var key in this.state) {
+  //     if (this.state.hasOwnProperty(key)) {
+  //       if (key !== 'barangayList') {
+  //         submitItem = { ...submitItem, [key]: this.state[key] }
+  //       }
+  //     }
+  //   }
+
+  //   let result = await this.props.saveHelpItem(submitItem);
+
+  //   if (result === 'OK') {
+  //     this.setState({
+  //       type: '',
+  //       item: '',
+  //       amount: 1,
+  //       locCity: '',
+  //       locBarangay: '',
+  //       locOther: '',
+  //       barangayList: [],
+  //       contactPerson: '',
+  //       contactNumber: '',
+  //       contactFacebook: '',
+  //     });
+  
+  //     this.props.getHelpLists()
+  //   }
+  // }
+
+  // getBarangayList(city) {
+  //   let returnList = [];
+
+  //   for (let i = 0; i < phLocations.citiesWithBarangayList.length; i++) {
+  //     if (phLocations.citiesWithBarangayList[i]['city'] === city) {
+  //       returnList = phLocations.citiesWithBarangayList[i]['barangayList'];
+  //       break;
+  //     }
+  //   }
+
+  //   return returnList;
+  // }
+
+  // handleBarangayListChange(value) {
+  //   this.setState({ barangayList: this.getBarangayList(value) });
+  // }
+
+  async handleSubmit(values, resetCallback) {
     let submitItem = {};
-    for (var key in this.state) {
-      if (this.state.hasOwnProperty(key)) {
-        if (key !== 'barangayList') {
-          submitItem = { ...submitItem, [key]: this.state[key] }
+
+    for (var key in values) {
+      if (values.hasOwnProperty(key)) {
+        if (key !== 'brgyList') {
+          submitItem = { ...submitItem, [key]: values[key] };
         }
       }
     }
@@ -74,20 +149,8 @@ class NewComponent extends Component {
     let result = await this.props.saveHelpItem(submitItem);
 
     if (result === 'OK') {
-      this.setState({
-        type: '',
-        item: '',
-        amount: 1,
-        locCity: '',
-        locBarangay: '',
-        locOther: '',
-        barangayList: [],
-        contactPerson: '',
-        contactNumber: '',
-        contactFacebook: '',
-      });
-  
-      this.props.getHelpLists()
+      resetCallback();
+      this.props.getHelpLists();
     }
   }
 
@@ -95,47 +158,7 @@ class NewComponent extends Component {
     this.setState({ isSubmitted: true }, callback);
   }
 
-  handleBarangayListChange(value) {
-    this.setState({ barangayList: this.getBarangayList(value) });
-  }
-
-  getBarangayList(city) {
-    let returnList = [];
-
-    for (let i = 0; i < phLocations.citiesWithBarangayList.length; i++) {
-      if (phLocations.citiesWithBarangayList[i]['city'] === city) {
-        returnList = phLocations.citiesWithBarangayList[i]['barangayList'];
-        break;
-      }
-    }
-
-    return returnList;
-  }
-
   renderForm() {
-    const requiredMsg = "This field is required."; 
-
-    const validationSchema = Yup.object({
-      type: Yup.string()
-        .required("Please select one."),
-      item: Yup.string()
-        .required(requiredMsg)
-        .notOneOf(['default'], 'Please select a PPE item.'),
-      amount: Yup.number()
-        .required(requiredMsg)
-        .integer('Amount must be an integer.')
-        .positive('Amount must be greater than 1.'),
-      locCity: Yup.string()
-        .required(requiredMsg),
-      locBarangay: Yup.string()
-        .required(requiredMsg),
-      contactPerson: Yup.string()
-        .required(requiredMsg),
-      contactNumber: Yup.string()
-        .required(requiredMsg)
-        .matches(/^[\d ()+-]+$/, 'This field can only contain: numbers, -, +, (, ).')
-    });
-
     const values = {
       type: '',
       item: 'default',
@@ -164,11 +187,11 @@ class NewComponent extends Component {
         component={(props) =>
           <Form
             styles={this.classes}
-            handleSubmit={this.handleSubmit}
-            handleFormInputChange={this.handleInputChange}
-            handleSubmitChange={this.handleSubmitChange.bind(this)}
-            handleListChange={this.handleBarangayListChange.bind(this)}
-            changeBrgyList={this.getBarangayList.bind(this)}
+            handleCustomSubmit={this.handleSubmit}
+            // handleFormInputChange={this.handleInputChange}
+            handleSubmitChange={this.handleSubmitChange}
+            // handleListChange={this.handleBarangayListChange.bind(this)}
+            // changeBrgyList={this.getBarangayList.bind(this)}
             { ...props }
           />
         }

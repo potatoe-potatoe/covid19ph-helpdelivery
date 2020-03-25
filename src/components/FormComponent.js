@@ -4,7 +4,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import phLocations from '../json/parsedLocations.json';
 import ppeList from '../json/ppeList.json';
 
-function Form({ styles, handleCustomSubmit, handleFormInputChange, handleSubmitChange, handleListChange, changeBrgyList, ...props }) {
+function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
   const { 
     values: {
       type, 
@@ -22,7 +22,8 @@ function Form({ styles, handleCustomSubmit, handleFormInputChange, handleSubmitC
     touched,
     isValid,
     setFieldTouched,
-    setFieldValue
+    setFieldValue,
+    resetForm
   } = props;
 
   // console.log('--------- START ---------');
@@ -56,8 +57,21 @@ function Form({ styles, handleCustomSubmit, handleFormInputChange, handleSubmitC
     alert(JSON.stringify(props.values, null, 2));
 
     if (isValid && isTouched()) {
-      // stuff here
+      handleCustomSubmit(props.values, resetForm);
     }
+  }
+
+  function getBarangayList(city) {
+    let returnList = [];
+
+    for (let i = 0; i < phLocations.citiesWithBarangayList.length; i++) {
+      if (phLocations.citiesWithBarangayList[i]['city'] === city) {
+        returnList = phLocations.citiesWithBarangayList[i]['barangayList'];
+        break;
+      }
+    }
+
+    return returnList;
   }
 
   const handleInputChange = (key, event) => {
@@ -69,7 +83,9 @@ function Form({ styles, handleCustomSubmit, handleFormInputChange, handleSubmitC
     const city = event.target.value;
 
     if (key === 'locCity') {
-      const list = changeBrgyList(city);
+      // const list = changeBrgyList(city);
+      const list = getBarangayList(city);
+      setFieldValue('locBarangay', '');
       setFieldValue('brgyList', list)
     }
 
@@ -212,7 +228,7 @@ function Form({ styles, handleCustomSubmit, handleFormInputChange, handleSubmitC
                             placeholder="--- Select Barangay ---"
                             InputLabelProps={{ shrink: true }}
                             InputProps={{ ...params.InputProps }}
-                            onChange={handleInputChange.bind(null, 'locBarangay')} />
+                            onBlur={handleInputChange.bind(null, 'locBarangay')} />
                         )} />
                     </MUI.FormControl>
                   </MUI.Grid>
