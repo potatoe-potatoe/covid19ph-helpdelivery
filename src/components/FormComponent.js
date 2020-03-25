@@ -6,7 +6,7 @@ import ppeList from '../json/ppeList.json';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-function Form({ styles, handleFormSubmit, handleFormInputChange, ...props }) {
+function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitChange, ...props }) {
   const { 
     values: {
       type, 
@@ -22,7 +22,8 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, ...props }) {
     errors,
     touched,
     isValid,
-    setFieldTouched
+    setFieldTouched,
+    submitCount
   } = props;
 
   console.log('--------- START ---------');
@@ -51,9 +52,23 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, ...props }) {
     console.log('Values are: ', props.values);
   }
 
+  function handleActualSubmit(e) {
+    e.preventDefault();
+
+    handleSubmitChange(props.handleSubmit(e));
+
+    alert("submit kek");
+    alert('look at errors: ', errors);
+
+    if (isValid && isTouched()) {
+      // stuff here
+    }
+  }
+
   const handleInputChange = (key, event) => {
     console.log('Handling change for event: ', event);
     event.persist();
+
     props.handleChange(event);
     setFieldTouched(key, true, false);
 
@@ -69,27 +84,32 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, ...props }) {
     <React.Fragment>
       <MUI.Paper style={{padding: '30px 12px'}}>
         <MUI.Container>
-          <form onSubmit={handleTempSubmit}>
+          <form onSubmit={handleActualSubmit}>
             <MUI.FormGroup>
-              <MUI.RadioGroup
-                className={styles.formGroupMargin}
-                name="type"
-                value={type}
-                onChange={handleInputChange.bind(null, 'type')}
+              <MUI.FormControl 
+                error={Boolean(errors.type)}
               >
-                <MUI.FormLabel className={styles.formTypographyPadding} component="legend">
-                    Are you <b>in need of donations</b> or <b>offering donations</b>? Please select one:
-                </MUI.FormLabel>
-                <MUI.FormControlLabel
-                  value="need"
-                  control={<MUI.Radio color="primary" />}
-                  label="I am in need of donations." />
-                <MUI.FormControlLabel 
-                  value="offer"
-                  control={<MUI.Radio color="primary" />}
-                  label="I am offering donations." />
-              </MUI.RadioGroup>
-              <div>{Boolean(errors.type) ? errors.type : ""}</div>
+                <MUI.RadioGroup
+                  className={styles.formGroupMargin}
+                  name="type"
+                  value={type}
+                  onChange={handleInputChange.bind(null, 'type')}
+                >
+                  <MUI.FormLabel className={styles.formTypographyPadding} component="legend">
+                      Are you <b>in need of donations</b> or <b>offering donations</b>?
+                  </MUI.FormLabel>
+                  <MUI.FormControlLabel
+                    value="need"
+                    control={<MUI.Radio color="primary" />}
+                    label="I am in need of donations." />
+                  <MUI.FormControlLabel 
+                    value="offer"
+                    control={<MUI.Radio color="primary" />}
+                    label="I am offering donations." />
+
+                  <MUI.FormHelperText>{Boolean(errors.type) ? errors.type: ""}</MUI.FormHelperText>
+                </MUI.RadioGroup>
+              </MUI.FormControl>
 
               <MUI.Card className={[styles.formGroupMargin, styles.formCardPadding]} variant="outlined">
                 <MUI.Typography className={styles.formTypographyPadding}>
@@ -97,14 +117,12 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, ...props }) {
                 </MUI.Typography>
 
                 <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={9} md={10}>
-                    <MUI.FormControl fullWidth>
+                  <MUI.Grid item xs={9}>
+                    <MUI.FormControl fullWidth error={Boolean(errors.item)}>
                       <MUI.InputLabel shrink> Item </MUI.InputLabel>
 
                       <MUI.Select
                         name="item"
-                        helperText={Boolean(errors.item) ? errors.item : ""}
-                        error={Boolean(errors.item)}
                         value={item}
                         label="item"
                         onChange={handleInputChange.bind(null, 'item')}
@@ -119,18 +137,21 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, ...props }) {
                           );
                         })}
                       </MUI.Select>
+
+                      <MUI.FormHelperText>{Boolean(errors.item) ? errors.item: ""}</MUI.FormHelperText>
                     </MUI.FormControl>
                   </MUI.Grid>
 
-                  <MUI.Grid item xs={3} md={2}>
+                  <MUI.Grid item xs={3}>
                     <MUI.FormControl fullWidth>
                       <MUI.TextField
+                        type="number"
+                        value={amount}
                         name="amount"
                         helperText={Boolean(errors.amount) ? errors.amount : ""}
                         error={Boolean(errors.amount)}
-                        value={amount}
-                        type="number"
                         label="Amount"
+                        InputLabelProps={{ shrink: true }}
                         onChange={handleInputChange.bind(null, 'amount')} />
                     </MUI.FormControl>
                   </MUI.Grid>
@@ -271,7 +292,6 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, ...props }) {
               size="large"
               color="primary"
               variant="contained"
-              disabled={!isValid || !isTouched()}
             >
               Submit
             </MUI.Button>
@@ -283,37 +303,26 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, ...props }) {
 }
 
 function FormWithValidation({ styles, handleSubmit, handleInputChange, ...mainProps }) {
-  Yup.addMethod(Yup.string, 'isNotAny', function(strList) {
-    const message = "This is not a valid value."
-
-    return this.test('test-name', message, function(value) {
-      const { path, createError } = this;
-
-      for (let str in strList) {
-        if (value == str) return createError(path, message);
-      }
-
-      return true;
-    })
-  });
+  const requiredMsg = "This field is required."; 
 
   const validationSchema = Yup.object({
     type: Yup.string()
       .required("Please select one."),
     item: Yup.string()
-      .required("This field is required.")
+      .required(requiredMsg)
       .notOneOf(['default'], 'Please select a PPE item.'),
     amount: Yup.number()
+      .required(requiredMsg)
       .integer('Amount must be an integer.')
-      .positive('Amount can only be a positive integer.'),
+      .positive('Amount must be greater than 1.'),
     locCity: Yup.string()
-      .required("This field is required."),
+      .required(requiredMsg),
     locBarangay: Yup.string()
-      .required("This field is required."),
+      .required(requiredMsg),
     contactPerson: Yup.string()
-      .required("This field is required."),
+      .required(requiredMsg),
     contactNumber: Yup.string()
-      .required("This field is required.")
+      .required(requiredMsg)
       .matches(/^[\d ()+-]+$/, 'This field can only contain: numbers, -, +, (, ).')
   });
 
@@ -348,6 +357,7 @@ function FormWithValidation({ styles, handleSubmit, handleInputChange, ...mainPr
           styles={styles}
           handleSubmit={handleSubmit}
           handleFormInputChange={handleInputChange}
+          handleSubmitChange={mainProps.handleSubmitChange}
           { ...mainProps }
           { ...props }
         />
@@ -355,6 +365,8 @@ function FormWithValidation({ styles, handleSubmit, handleInputChange, ...mainPr
       initialValues={values}
       initialTouched={touched}
       validationSchema={validationSchema}
+      validateOnBlur={mainProps.isSubmitted}
+      validateOnChange={mainProps.isSubmitted}
     />
   );
 }

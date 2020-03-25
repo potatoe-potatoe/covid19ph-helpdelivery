@@ -40,7 +40,7 @@ class NewComponent extends Component {
       contactPerson: '',
       contactNumber: '',
       contactFacebook: '',
-
+      isSubmitted: false
     }
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -94,6 +94,10 @@ class NewComponent extends Component {
     }
   }
 
+  handleSubmitChange(callback) {
+    this.setState({ isSubmitted: true, callback });
+  }
+
   getBarangayList(city) {
     let returnList = [];
 
@@ -123,6 +127,8 @@ class NewComponent extends Component {
         contactPerson={this.state.contactPerson}
         contactNumber={this.state.contactNumber}
         contactFacebook={this.state.contactFacebook}
+        isSubmitted={this.state.isSubmitted}
+        handleSubmitChange={this.handleSubmitChange.bind(this)}
       />
     );
   }
