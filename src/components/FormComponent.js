@@ -1,64 +1,44 @@
 import React from 'react';
-import * as MUI from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Paper, Container, Card, Grid, FormGroup, FormControl, FormLabel, FormControlLabel, FormHelperText, InputLabel, 
+  Button, Select, MenuItem, TextField, Radio, RadioGroup, Typography } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import phLocations from '../json/parsedLocations.json';
 import ppeList from '../json/ppeList.json';
 
-function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
-  const { 
-    values: {
-      type, 
-      item, 
-      amount,
-      locCity,
-      locBarangay,
-      locOther,
-      contactPerson,
-      contactNumber, 
-      contactFacebook,
-      brgyList
-    }, 
+function Form({ styles, handleFormSubmit, handleFormSubmitChange, ...props }) {
+  const {
+    values,
     errors,
     touched,
     isValid,
     setFieldTouched,
     setFieldValue,
+    handleSubmit,
+    handleChange,
     resetForm
   } = props;
 
-  // console.log('--------- START ---------');
-  // console.log('This is initial touched: ', touched);
-  // console.log('This is errors: ', errors);
-
-  // for (let error in errors) {
-  //   console.log(`This is [${error}] error: `, errors[error]);
-  // }
+  const {
+    type,
+    item,
+    amount,
+    locCity,
+    locBarangay,
+    locOther,
+    contactPerson,
+    contactNumber,
+    contactFacebook,
+    brgyList
+  } = values;
 
   function isTouched() {
-    // console.log('This is the array: ', touched);
     for (let field in touched) {
-      // console.log('This is current: ', touched[field]);
-
       if (!touched[field]) {
         return false;
       }
     }
 
     return true;
-  }
-
-  function handleFormSubmit(e) {
-    e.preventDefault();
-
-    handleSubmitChange(props.handleSubmit(e));
-
-    // alert("submit kek");
-    alert('look at errors: ', JSON.stringify(errors, null, 2));
-    alert(JSON.stringify(props.values, null, 2));
-
-    if (isValid && isTouched()) {
-      handleCustomSubmit(props.values, resetForm);
-    }
   }
 
   function getBarangayList(city) {
@@ -74,93 +54,97 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
     return returnList;
   }
 
-  const handleInputChange = (key, event) => {
+  function handleCustomSubmit(e) {
+    e.preventDefault();
+    handleFormSubmitChange(handleSubmit(e));
+
+    // debug logging
+    console.log(JSON.stringify(values, null, 2));
+
+    if (isValid && isTouched()) {
+      handleFormSubmit(values, resetForm);
+    }
+  }
+
+  const handleCustomInputChange = (key, event) => {
     event.persist();
 
-    props.handleChange(event);
+    handleChange(event);
     setFieldTouched(key, true, false);
 
-    const city = event.target.value;
-
     if (key === 'locCity') {
-      // const list = changeBrgyList(city);
+      const city = event.target.value;
       const list = getBarangayList(city);
+
       setFieldValue('locBarangay', '');
       setFieldValue('brgyList', list)
     }
-
-    setTimeout(() => console.log('Value of event: ', eval(key)), 2000);
   }
-
-  // console.log('isTouched: ', (isTouched()));
-  // console.log('!isTouched: ', !(isTouched()));
-  // console.log('!isValid: ', !isValid);
-  // console.log('Print this: ', (!isValid || !(isTouched())));
 
   return (
     <React.Fragment>
-      <MUI.Paper style={{padding: '30px 12px'}}>
-        <MUI.Container>
-          <form onSubmit={handleFormSubmit}>
-            <MUI.FormGroup>
-              <MUI.FormControl error={Boolean(errors.type)}>
-                <MUI.RadioGroup
+      <Paper style={{padding: '30px 12px'}}>
+        <Container>
+          <form onSubmit={handleCustomSubmit}>
+            <FormGroup>
+              <FormControl error={Boolean(errors.type)}>
+                <RadioGroup
                   className={styles.formGroupMargin}
                   name="type"
                   value={type}
-                  onChange={handleInputChange.bind(null, 'type')}
+                  onChange={handleCustomInputChange.bind(null, 'type')}
                 >
-                  <MUI.FormLabel className={styles.formTypographyPadding} component="legend">
+                  <FormLabel className={styles.formTypographyPadding} component="legend">
                       Are you <b>in need of donations</b> or <b>offering donations</b>?
-                  </MUI.FormLabel>
+                  </FormLabel>
 
-                  <MUI.FormControlLabel
+                  <FormControlLabel
                     value="need"
-                    control={<MUI.Radio color="primary" />}
+                    control={<Radio color="primary" />}
                     label="I am in need of donations." />
 
-                  <MUI.FormControlLabel 
+                  <FormControlLabel 
                     value="offer"
-                    control={<MUI.Radio color="primary" />}
+                    control={<Radio color="primary" />}
                     label="I am offering donations." />
 
-                  <MUI.FormHelperText>{Boolean(errors.type) ? errors.type: ""}</MUI.FormHelperText>
-                </MUI.RadioGroup>
-              </MUI.FormControl>
+                  <FormHelperText>{Boolean(errors.type) ? errors.type: ""}</FormHelperText>
+                </RadioGroup>
+              </FormControl>
 
-              <MUI.Card className={[styles.formGroupMargin, styles.formCardPadding]} variant="outlined">
-                <MUI.Typography className={styles.formTypographyPadding}>
+              <Card className={[styles.formGroupMargin, styles.formCardPadding]} variant="outlined">
+                <Typography className={styles.formTypographyPadding}>
                   Donation Item Details
-                </MUI.Typography>
+                </Typography>
 
-                <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={9}>
-                    <MUI.FormControl fullWidth error={Boolean(errors.item)}>
-                      <MUI.InputLabel shrink> Item </MUI.InputLabel>
+                <Grid container spacing={4}>
+                  <Grid item xs={9}>
+                    <FormControl fullWidth error={Boolean(errors.item)}>
+                      <InputLabel shrink> Item </InputLabel>
 
-                      <MUI.Select
+                      <Select
                         name="item"
                         value={item}
-                        onChange={handleInputChange.bind(null, 'item')}
+                        onChange={handleCustomInputChange.bind(null, 'item')}
                       >
-                        <MUI.MenuItem disabled value='default'>
+                        <MenuItem disabled value='default'>
                           <span style={{ color: '#babfbc' }}>{'--- Select Item ---'}</span>
-                        </MUI.MenuItem>
+                        </MenuItem>
 
                         {ppeList.ppeList.map((item) => {
                           return(
-                            <MUI.MenuItem value={item.name}>{item.name}</MUI.MenuItem>
+                            <MenuItem value={item.name}>{item.name}</MenuItem>
                           );
                         })}
-                      </MUI.Select>
+                      </Select>
 
-                      <MUI.FormHelperText>{Boolean(errors.item) ? errors.item: ""}</MUI.FormHelperText>
-                    </MUI.FormControl>
-                  </MUI.Grid>
+                      <FormHelperText>{Boolean(errors.item) ? errors.item: ""}</FormHelperText>
+                    </FormControl>
+                  </Grid>
 
-                  <MUI.Grid item xs={3}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
+                  <Grid item xs={3}>
+                    <FormControl fullWidth>
+                      <TextField
                         name="amount"
                         type="number"
                         label="Amount"
@@ -168,20 +152,20 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
                         error={Boolean(errors.amount)}
                         helperText={Boolean(errors.amount) ? errors.amount : ""}
                         InputLabelProps={{ shrink: true }}
-                        onChange={handleInputChange.bind(null, 'amount')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-                </MUI.Grid>
-              </MUI.Card>
+                        onChange={handleCustomInputChange.bind(null, 'amount')} />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Card>
 
-              <MUI.Card className={[styles.formGroupMargin, styles.formCardPadding]} variant="outlined">
-                <MUI.Typography className={styles.formTypographyPadding}>
+              <Card className={[styles.formGroupMargin, styles.formCardPadding]} variant="outlined">
+                <Typography className={styles.formTypographyPadding}>
                   Location
-                </MUI.Typography>
+                </Typography>
 
-                <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={12} md={4}>
-                    <MUI.FormControl fullWidth>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} md={4}>
+                    <FormControl fullWidth>
                       <Autocomplete
                         autoHighlight
                         options={phLocations.cityList}
@@ -192,7 +176,7 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
                         )}
                         getOptionLabel={option => option}
                         renderInput={params => (
-                          <MUI.TextField
+                          <TextField
                             {...params}
                             name="locCity"
                             label="City / Municipality"
@@ -202,13 +186,13 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
                             placeholder="--- Select City ---"
                             InputLabelProps={{ shrink: true }}
                             InputProps={{ ...params.InputProps }}
-                            onBlur={handleInputChange.bind(null, 'locCity')} />
+                            onBlur={handleCustomInputChange.bind(null, 'locCity')} />
                         )} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
+                    </FormControl>
+                  </Grid>
 
-                  <MUI.Grid item xs={12} md={4} alignItems="center">
-                    <MUI.FormControl fullWidth>
+                  <Grid item xs={12} md={4} alignItems="center">
+                    <FormControl fullWidth>
                       <Autocomplete
                         autoHighlight
                         options={brgyList}
@@ -218,7 +202,7 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
                           </React.Fragment>
                         )}
                         renderInput={params => (
-                          <MUI.TextField
+                          <TextField
                             {...params}
                             name="locBarangay"
                             label="Barangay"
@@ -228,34 +212,34 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
                             placeholder="--- Select Barangay ---"
                             InputLabelProps={{ shrink: true }}
                             InputProps={{ ...params.InputProps }}
-                            onBlur={handleInputChange.bind(null, 'locBarangay')} />
+                            onBlur={handleCustomInputChange.bind(null, 'locBarangay')} />
                         )} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
+                    </FormControl>
+                  </Grid>
 
-                  <MUI.Grid item xs={12} md={4} alignItems="center">
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
+                  <Grid item xs={12} md={4} alignItems="center">
+                    <FormControl fullWidth>
+                      <TextField
                         name="locOther"
                         label="Other Location Details"
                         value={locOther}
                         placeholder="Example: street number, block, area"
                         InputLabelProps={{ shrink: true }}
-                        onChange={handleInputChange.bind(null, 'locOther')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-                </MUI.Grid>
-              </MUI.Card>
+                        onChange={handleCustomInputChange.bind(null, 'locOther')} />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Card>
 
-              <MUI.Card className={[styles.formGroupMargin, styles.formCardPadding]} variant="outlined">
-                <MUI.Typography className={styles.formTypographyPadding}>
+              <Card className={[styles.formGroupMargin, styles.formCardPadding]} variant="outlined">
+                <Typography className={styles.formTypographyPadding}>
                   Contact Details
-                </MUI.Typography>
+                </Typography>
 
-                <MUI.Grid container spacing={4}>
-                  <MUI.Grid item xs={12}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
+                <Grid container spacing={4}>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <TextField
                         name="contactPerson"
                         label="Contact Person"
                         value={contactPerson}
@@ -263,13 +247,13 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
                         helperText={Boolean(errors.contactPerson) ? errors.contactPerson : ""}
                         placeholder="Example: Juan dela Cruz"
                         InputLabelProps={{ shrink: true }}
-                        onChange={handleInputChange.bind(null, 'contactPerson')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
+                        onChange={handleCustomInputChange.bind(null, 'contactPerson')} />
+                    </FormControl>
+                  </Grid>
 
-                  <MUI.Grid item xs={12} sm={6}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
+                  <Grid item xs={12} sm={6}>
+                    <FormControl fullWidth>
+                      <TextField
                         name="contactNumber"
                         label="Contact #"
                         value={contactNumber}
@@ -277,13 +261,13 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
                         helperText={Boolean(errors.contactNumber) ? errors.contactNumber : ""}
                         placeholder="Insert mobile or landline number"
                         InputLabelProps={{ shrink: true }}
-                        onChange={handleInputChange.bind(null, 'contactNumber')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
+                        onChange={handleCustomInputChange.bind(null, 'contactNumber')} />
+                    </FormControl>
+                  </Grid>
 
-                  <MUI.Grid item xs={12} sm={6}>
-                    <MUI.FormControl fullWidth>
-                      <MUI.TextField
+                  <Grid item xs={12} sm={6}>
+                    <FormControl fullWidth>
+                      <TextField
                         name="contactFacebook"
                         label="Facebook"
                         value={contactFacebook}
@@ -291,14 +275,14 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
                         helperText={Boolean(errors.contactFacebook) ? errors.contactFacebook : ""}
                         placeholder="Insert name or link"
                         InputLabelProps={{ shrink: true }}
-                        onChange={handleInputChange.bind(null, 'contactFacebook')} />
-                    </MUI.FormControl>
-                  </MUI.Grid>
-                </MUI.Grid>
-              </MUI.Card>
-            </MUI.FormGroup>
+                        onChange={handleCustomInputChange.bind(null, 'contactFacebook')} />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Card>
+            </FormGroup>
 
-            <MUI.Button
+            <Button
               className={styles.formGroupMargin}
               type="submit"
               size="large"
@@ -306,10 +290,10 @@ function Form({ styles, handleCustomSubmit, handleSubmitChange, ...props }) {
               variant="contained"
             >
               Submit
-            </MUI.Button>
+            </Button>
           </form>
-        </MUI.Container>
-      </MUI.Paper>
+        </Container>
+      </Paper>
     </React.Fragment>
   );
 }
