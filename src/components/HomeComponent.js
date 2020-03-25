@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import * as MUI from '@material-ui/core';
+import {List, ListSubheader, ListItem, ListItemText, Chip, Dialog, DialogTitle, Grid, Container, TableContainer, Table,
+  TableBody, TableRow, TableCell, Button, Paper, }from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import NewComponent from './NewComponent';
 import { setDetails, getHelpLists } from '../actions/MainAction';
@@ -48,23 +49,23 @@ class HomeComponent extends Component {
   renderList() {
     return (
       <React.Fragment>
-        <MUI.List
+        <List
           aria-labelledby="nested-list-subheader"
           subheader={
-            <MUI.ListSubheader component="div" id="nested-list-subheader">Recent Items</MUI.ListSubheader>
+            <ListSubheader component="div" id="nested-list-subheader">Recent Items</ListSubheader>
           }
           className={this.classes.root}>
           {this.state.list.map(row => (
-            <MUI.ListItem key={row.id} onClick={() => {this.clickListItem(row)}} button>
-              <MUI.ListItemText
+            <ListItem key={row.id} onClick={() => {this.clickListItem(row)}} button>
+              <ListItemText
                 primary={(row.item).concat(' (x', row.amount, ')')}
                 secondary={(row.locCity).concat(', ', (row.locBarangay))} />
-              <MUI.Chip l
+              <Chip l
                 className={this.classes.customChip}
                 label={(row.type).toUpperCase()}
                 color={row.type === 'offer' ? 'primary' : 'secondary'} />
-            </MUI.ListItem>))}
-        </MUI.List>
+            </ListItem>))}
+        </List>
       </React.Fragment>
     );
   }
@@ -78,51 +79,57 @@ class HomeComponent extends Component {
     }
 
     return (
-      <MUI.Dialog open={this.state.dialogOpen} onClose={this.toggleDialog}>
-        <MUI.DialogTitle id="simple-dialog-title" style={{ paddingBottom: '0px'}}>
-          <MUI.Chip
-            className={this.classes.customChip}
-            label={(this.props.details.type).toUpperCase()}
-            color={this.props.details.type === 'offer' ? 'primary' : 'secondary'} />
-          &nbsp; {this.props.details.item} (x{this.props.details.amount})
-        </MUI.DialogTitle>
+      <Dialog open={this.state.dialogOpen} onClose={this.toggleDialog}>
+        <DialogTitle id="simple-dialog-title" style={{ paddingBottom: '0px'}}>
+          <Grid container>
+            <Grid item>
+              <Chip
+                className={this.classes.customChip}
+                label={(this.props.details.type).toUpperCase()}
+                color={this.props.details.type === 'offer' ? 'primary' : 'secondary'} />
+            </Grid>
+            <Grid>
+              <span>&nbsp; {this.props.details.item} (x{this.props.details.amount})</span>
+            </Grid>
+          </Grid>
+        </DialogTitle>
 
-        <MUI.Container style={{ padding: '5px', minWidth: '200px'}}>
-          <MUI.TableContainer>
-              <MUI.Table className={this.classes.table} aria-label="simple-table">
-                <MUI.TableBody>
-                  <MUI.TableRow key="details">
-                    <MUI.TableCell><strong>LOCATION</strong></MUI.TableCell>
-                    <MUI.TableCell>
+        <Container style={{ padding: '5px', minWidth: '200px'}}>
+          <TableContainer>
+              <Table className={this.classes.table} aria-label="simple-table">
+                <TableBody>
+                  <TableRow key="details">
+                    <TableCell><strong>LOCATION</strong></TableCell>
+                    <TableCell>
                       {this.props.details.locCity} <br />
                       {this.props.details.locBarangay} <br />
                       {this.props.details.locOther}
-                    </MUI.TableCell>
-                  </MUI.TableRow>
+                    </TableCell>
+                  </TableRow>
 
-                  <MUI.TableRow key="contact_person">
-                    <MUI.TableCell><strong>CONTACT</strong></MUI.TableCell>
-                    <MUI.TableCell>{this.props.details.contactPerson}</MUI.TableCell>
-                  </MUI.TableRow>
+                  <TableRow key="contact_person">
+                    <TableCell><strong>CONTACT</strong></TableCell>
+                    <TableCell>{this.props.details.contactPerson}</TableCell>
+                  </TableRow>
 
-                  <MUI.TableRow key="contact_number">
-                    <MUI.TableCell><strong>CONTACT NUMBER</strong></MUI.TableCell>
-                    <MUI.TableCell>{this.props.details.contactNumber}</MUI.TableCell>
-                  </MUI.TableRow>
+                  <TableRow key="contact_number">
+                    <TableCell><strong>CONTACT NUMBER</strong></TableCell>
+                    <TableCell>{this.props.details.contactNumber}</TableCell>
+                  </TableRow>
                   
-                  <MUI.TableRow key="contact_facebook">
-                    <MUI.TableCell style={{ border: '0px solid' }}><strong>FACEBOOK PROFILE</strong></MUI.TableCell>
-                    <MUI.TableCell style={{ border: '0px solid' }}>{this.props.details.contactFacebook}</MUI.TableCell>
-                  </MUI.TableRow>
-                </MUI.TableBody>
-              </MUI.Table>
-            </MUI.TableContainer>
-        </MUI.Container>
+                  <TableRow key="contact_facebook">
+                    <TableCell style={{ border: '0px solid' }}><strong>FACEBOOK PROFILE</strong></TableCell>
+                    <TableCell style={{ border: '0px solid' }}>{this.props.details.contactFacebook}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+        </Container>
 
-        <MUI.Button style={{ backgroundColor: 'black', color: 'white', borderRadius: '0' }} size='large' onClick={this.toggleDialog} variant="contained">
+        <Button style={{ backgroundColor: 'black', color: 'white', borderRadius: '0' }} size='large' onClick={this.toggleDialog} variant="contained">
           <strong>Close</strong>
-        </MUI.Button>
-      </MUI.Dialog>
+        </Button>
+      </Dialog>
     );
   }
 
@@ -133,11 +140,11 @@ class HomeComponent extends Component {
   render() {
     return (
       <div style={{ padding: '10px 0px' }}>
-        <MUI.Container maxWidth="lg">
+        <Container maxWidth="lg">
           {this.renderDialog()}
 
-          <MUI.Paper style={{ padding: '5px 12px 30px' }}>
-            <MUI.Container>
+          <Paper style={{ padding: '5px 12px 30px' }}>
+            <Container>
               <h1>Medical Equipments (PPE) Donation Platform</h1>
               <p>
                 <strong> Data Privacy notice: </strong><br />
@@ -148,18 +155,18 @@ class HomeComponent extends Component {
 
               <strong>Please use this app responsibly.</strong>
 
-            </MUI.Container>
-          </MUI.Paper>
+            </Container>
+          </Paper>
 
           <br />
 
-          <MUI.Grid  container spacing={3}>
-            <MUI.Grid item xs={12}>
+          <Grid  container spacing={3}>
+            <Grid item xs={12}>
               <NewComponent />
               {this.renderList()}
-            </MUI.Grid>
-          </MUI.Grid>
-        </MUI.Container>
+            </Grid>
+          </Grid>
+        </Container>
       </div>
     );
     
