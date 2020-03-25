@@ -6,7 +6,7 @@ import ppeList from '../json/ppeList.json';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitChange, ...props }) {
+function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitChange, handleListChange, changeBrgyList, ...props }) {
   const { 
     values: {
       type, 
@@ -17,13 +17,14 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitCha
       locOther,
       contactPerson,
       contactNumber, 
-      contactFacebook
+      contactFacebook,
+      brgyList
     }, 
     errors,
     touched,
     isValid,
     setFieldTouched,
-    submitCount
+    setFieldValue
   } = props;
 
   console.log('--------- START ---------');
@@ -63,6 +64,8 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitCha
     if (isValid && isTouched()) {
       // stuff here
     }
+
+    alert(JSON.stringify(props.values, null, 2));
   }
 
   const handleInputChange = (key, event) => {
@@ -71,6 +74,14 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitCha
 
     props.handleChange(event);
     setFieldTouched(key, true, false);
+
+    const city = event.target.value;
+
+    if (key === 'locCity') {
+      const list = changeBrgyList(city);
+      setFieldValue('brgyList', list)
+
+    }
 
     setTimeout(() => console.log('Value of event: ', eval(key)), 2000);
   }
@@ -194,7 +205,7 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitCha
                   <MUI.Grid item xs={12} md={4} alignItems="center">
                     <MUI.FormControl fullWidth>
                       <Autocomplete
-                        options={props.barangayList}
+                        options={brgyList}
                         autoHighlight
                         renderOption={option => (
                           <React.Fragment>
@@ -263,7 +274,6 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitCha
                         InputLabelProps={{ shrink: true }}
                         label="Contact #"
                         placeholder="Insert mobile or landline number"
-                        value={props.contactNumber}
                         onChange={handleInputChange.bind(null, 'contactNumber')} />
                     </MUI.FormControl>
                   </MUI.Grid>
@@ -278,7 +288,6 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitCha
                           InputLabelProps={{ shrink: true }}
                           label="Facebook"
                           placeholder="Insert name or link"
-                          value={props.contactFacebook}
                           onChange={handleInputChange.bind(null, 'contactFacebook')} />
                     </MUI.FormControl>
                   </MUI.Grid>
@@ -302,73 +311,4 @@ function Form({ styles, handleFormSubmit, handleFormInputChange, handleSubmitCha
   );
 }
 
-function FormWithValidation({ styles, handleSubmit, handleInputChange, ...mainProps }) {
-  const requiredMsg = "This field is required."; 
-
-  const validationSchema = Yup.object({
-    type: Yup.string()
-      .required("Please select one."),
-    item: Yup.string()
-      .required(requiredMsg)
-      .notOneOf(['default'], 'Please select a PPE item.'),
-    amount: Yup.number()
-      .required(requiredMsg)
-      .integer('Amount must be an integer.')
-      .positive('Amount must be greater than 1.'),
-    locCity: Yup.string()
-      .required(requiredMsg),
-    locBarangay: Yup.string()
-      .required(requiredMsg),
-    contactPerson: Yup.string()
-      .required(requiredMsg),
-    contactNumber: Yup.string()
-      .required(requiredMsg)
-      .matches(/^[\d ()+-]+$/, 'This field can only contain: numbers, -, +, (, ).')
-  });
-
-  const values = {
-    type: '',
-    item: 'default',
-    amount: 1,
-    locCity: '',
-    locBarangay: '',
-    locOther: '',
-    contactPerson: '',
-    contactNumber: '',
-    contactFacebook: ''
-  };
-
-  const touched = {
-    type: false,
-    item: false,
-    amount: false,
-    locCity: false,
-    locBaragay: false,
-    // locOther: false,        // not a required field
-    contactPerson: false,
-    contactNumber: false,
-    // contactFacebook: false  // not a required field
-  };
-  
-  return (
-    <Formik
-      component={(props) =>
-        <Form
-          styles={styles}
-          handleSubmit={handleSubmit}
-          handleFormInputChange={handleInputChange}
-          handleSubmitChange={mainProps.handleSubmitChange}
-          { ...mainProps }
-          { ...props }
-        />
-      }
-      initialValues={values}
-      initialTouched={touched}
-      validationSchema={validationSchema}
-      validateOnBlur={mainProps.isSubmitted}
-      validateOnChange={mainProps.isSubmitted}
-    />
-  );
-}
-
-export default FormWithValidation;
+export default Form;

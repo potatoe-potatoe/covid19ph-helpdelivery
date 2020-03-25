@@ -2,15 +2,12 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import * as MUI from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { withStyles } from '@material-ui/core/styles';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import { saveHelpItem, getHelpLists } from '../actions/MainAction';
 import phLocations from '../json/parsedLocations.json';
-import ppeList from '../json/ppeList.json';
-import FormWithValidation from './FormComponent';
-import { Formik } from 'formik';
-
+import Form from './FormComponent';
 
 const styles = theme => ({
   formGroupMargin: {
@@ -95,7 +92,11 @@ class NewComponent extends Component {
   }
 
   handleSubmitChange(callback) {
-    this.setState({ isSubmitted: true, callback });
+    this.setState({ isSubmitted: true }, callback);
+  }
+
+  handleBarangayListChange(value) {
+    this.setState({ barangayList: this.getBarangayList(value) });
   }
 
   getBarangayList(city) {
@@ -111,26 +112,77 @@ class NewComponent extends Component {
     return returnList;
   }
 
-  render() {
+  renderForm() {
+    const requiredMsg = "This field is required."; 
+
+    const validationSchema = Yup.object({
+      type: Yup.string()
+        .required("Please select one."),
+      item: Yup.string()
+        .required(requiredMsg)
+        .notOneOf(['default'], 'Please select a PPE item.'),
+      amount: Yup.number()
+        .required(requiredMsg)
+        .integer('Amount must be an integer.')
+        .positive('Amount must be greater than 1.'),
+      locCity: Yup.string()
+        .required(requiredMsg),
+      locBarangay: Yup.string()
+        .required(requiredMsg),
+      contactPerson: Yup.string()
+        .required(requiredMsg),
+      contactNumber: Yup.string()
+        .required(requiredMsg)
+        .matches(/^[\d ()+-]+$/, 'This field can only contain: numbers, -, +, (, ).')
+    });
+
+    const values = {
+      type: '',
+      item: 'default',
+      amount: 1,
+      locCity: '',
+      locBarangay: '',
+      locOther: '',
+      contactPerson: '',
+      contactNumber: '',
+      contactFacebook: '',
+      brgyList: []
+    };
+
+    const touched = {
+      type: false,
+      item: false,
+      amount: false,
+      locCity: false,
+      locBaragay: false,
+      contactPerson: false,
+      contactNumber: false,
+    };
+      
     return (
-      <FormWithValidation
-        styles={this.classes}
-        handleSubmit={this.handleSubmit}
-        handleInputChange={this.handleInputChange}
-        type={this.state.type}
-        item={this.state.item}
-        amount={this.state.amount}
-        locCity={this.state.locCity}
-        locBarangay={this.state.locBarangay}
-        locOther={this.state.locOther}
-        barangayList={this.state.barangayList}
-        contactPerson={this.state.contactPerson}
-        contactNumber={this.state.contactNumber}
-        contactFacebook={this.state.contactFacebook}
-        isSubmitted={this.state.isSubmitted}
-        handleSubmitChange={this.handleSubmitChange.bind(this)}
+      <Formik
+        component={(props) =>
+          <Form
+            styles={this.classes}
+            handleSubmit={this.handleSubmit}
+            handleFormInputChange={this.handleInputChange}
+            handleSubmitChange={this.handleSubmitChange.bind(this)}
+            handleListChange={this.handleBarangayListChange.bind(this)}
+            changeBrgyList={this.getBarangayList.bind(this)}
+            { ...props }
+          />
+        }
+        initialValues={values}
+        initialTouched={touched}
+        validationSchema={validationSchema}
+        validateOnBlur={this.state.isSubmitted}
+        validateOnChange={this.state.isSubmitted}
       />
     );
+  }
+
+  render() {
+    return ( this.renderForm() );
   }
 }
 
